@@ -1,45 +1,82 @@
 import requests
-from bs4 import BeautifulSoup
 
+import threading
+from queue import Queue
+from abc import ABC, abstractmethod
+from parser import Parse
+from utils import utils
+class BaseCrawler(ABC):
 
-def get_links():
-    crawl = True
-    links = list()
-    pagination = 92
-
-    while crawl:
-        url = f"https://www.zoomit.ir/tablet/page/{pagination}/"
+    @staticmethod
+    def get(url):
+        
         response = requests.get(url)
-        if len(response.history) > 0:
-            return None
+        # when pagination is ending, zoomit.ir redirect the pages
+        #   to another page,So I put a redirect checker
+        if response.status_code == 200 and len(response.history) == 0:
+            return response
 
-        print(f"crawling page: {pagination}")
+        return None
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        article_divs = soup.find_all(
-            'a', attrs={'class': 'catlist__post-title'}
-        )
-        article_links = [li.get('href') for li in article_divs]
-        wide_row_div = soup.find_all('div', attrs={'class': 'new-img'})
-        wide_row_articles = [li.a.get('href') for li in wide_row_div]
+    @abstractmethod
+    def start(self):
+        pass
 
-        article_links.extend(wide_row_articles)
-        print(len(article_links))
-        print(article_links)
-        pagination += 1
-        links.extend(article_links)
+    @abstractmethod
+    def save(self):
+        pass
 
-    return links
+class LinkCrawler(BaseCrawler):
+    
+    def __init__(self):
+        self.parser = Parse()
+        
 
-def get_articles(url):
-    pass
-    # response = requests.get(url)
-    # if response.status_code == 200:
-    #     soup = BeautifulSoup(response.text, 'html.parser')
-    #     title = find_
+    def get_link(self, queue):
+
+        while queue.qsize():
+        
+            page = queue.get()
+            response = self.get(f"https://www.zoomit.ir/tablet/page/{page}/")
+            print(f"Response status is {response}")
+            print(len(response.history))
+            print(f"Page : {page}")
+            print("*"*10)
+            queue.task_done()
+
+    
+    def get_pagination(self, category):
+        response = self.get(f"https://www.zoomit.ir/{category}/")
+        pagination_text = self.parser.pagination(response.text)
+        
+        return utils.pagination_text_parser(pagination_text)
 
 
-    # soup = BeautifulSoup()
+    def start(self,category, threads=8):
+        
+        queue = Queue()
+        for page in range(1, self.get_pagination(category)+1):
+            queue.put(page)
+
+        threads_list = []
+        for _ in range(threads):
+            x = threading.Thread(target=self.get_link, args=(queue, ))
+            threads_list.append(x)
+            x.start()
+
+        for t in threads_list:
+            t.join()
+
+        print("Tasks Done")
+
+
+    def save(self):
+        pass
+
+     
+
+
+
 
 if __name__ == '__main__':
     get_links()
