@@ -17,12 +17,16 @@ class BaseModel(Model):
 class Category(BaseModel):
     name = CharField()
 
-class author(BaseModel):
+
+class Author(BaseModel):
     name = CharField()
+
+
 class Article(BaseModel):
     url = CharField(null=True)
     title = CharField(null=True)
     body = TextField(null=True)
     is_completed = BooleanField(default=False)
     category = ForeignKeyField(Category, backref='articles')
+    author = ForeignKeyField(Author, backref='authors')
 
