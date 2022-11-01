@@ -1,7 +1,7 @@
-from models.base_db import BaseModel
+from src.models import BaseModel
 from peewee import CharField, TextField, BooleanField, DateTimeField, ForeignKeyField
-from models.category import Category
-from models.author import Author
+from src.models import Category
+from src.models import Author
 
 
 class Article(BaseModel):

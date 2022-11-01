@@ -3,8 +3,8 @@ import requests
 import threading
 from queue import Queue
 from abc import ABC, abstractmethod
-from parser import Parse
-from utils import utils
+from parse import Parse
+from utils import constants
 class BaseCrawler(ABC):
 
     @staticmethod
@@ -49,7 +49,7 @@ class LinkCrawler(BaseCrawler):
         response = self.get(f"https://www.zoomit.ir/{category}/")
         pagination_text = self.parser.pagination(response.text)
         
-        return utils.pagination_text_parser(pagination_text)
+        return constants.pagination_text_parser(pagination_text)
 
 
     def start(self,category, threads=8):

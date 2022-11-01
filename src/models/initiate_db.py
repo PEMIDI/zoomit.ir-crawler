@@ -1,4 +1,4 @@
-from models import database, Article, Category, Author
+from src.models import database, Article, Category, Author
 
 
 def create_table():
