@@ -10,7 +10,6 @@ from utils.constants import CATEGORIES
 from utils.utils import category_exist
 
 
-
 def initiate_database():
     create_table()
 
@@ -36,9 +35,6 @@ if __name__ == '__main__':
         else:
             print('category not found!')
             
-            
-
-
 
 
     if sys.argv[1] == 'get_article':
