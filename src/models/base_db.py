@@ -1,5 +1,5 @@
-from peewee import MySQLDatabase, Model, TextField, CharField,BooleanField, ForeignKeyField, DateTimeField, AutoField
-from config import SQL_USERNAME, SQL_PASSWORD, SQL_HOST, SQL_PORT
+from peewee import MySQLDatabase, Model, DateTimeField
+from src.config import SQL_USERNAME, SQL_PASSWORD, SQL_HOST, SQL_PORT
 from datetime import datetime
 
 
