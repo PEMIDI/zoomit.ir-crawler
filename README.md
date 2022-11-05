@@ -25,7 +25,7 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-### Create a MuSQL Database:
+### Create a MySQL Database:
 
 ```
 CREATE DATABASE dbname;
